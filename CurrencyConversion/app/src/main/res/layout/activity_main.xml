@@ -68,62 +68,8 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="10dp"
-        android:visibility="gone">
+        android:visibility="gone"></LinearLayout>
 
-        <TextView
-            android:id="@+id/message1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Message:"
-            android:textSize="20dp"
-            android:visibility="gone"
-            android:textColor="@android:color/black"
-            />
 
-        <TextView
-            android:id="@+id/message2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="5dp"
-            android:visibility="gone"
-            android:textColor="@android:color/darker_gray"
-            />
-        <TextView
-            android:id="@+id/message3"
-            android:layout_width="wrap_content"
-
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:visibility="gone"
-            android:textColor="@android:color/darker_gray"
-            android:padding="5dp"
-            android:gravity="center"
-            />
-
-        <TextView
-            android:id="@+id/message4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textColor="@android:color/darker_gray"
-            android:gravity="center"
-            android:visibility="gone"
-            android:padding="5dp"
-            android:textStyle="bold"
-            />
-
-        <Button
-            android:id="@+id/tryAgainButton"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:text="Try Again"
-            android:visibility="gone"
-            android:textColor="@android:color/white"
-
-            android:textAllCaps="false"/>
-    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

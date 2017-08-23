@@ -44,6 +44,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+    static String CURRENCY_RATE_URI = "http://api.fixer.io/latest";
     HashMap<String,Double > hashMapRates = new HashMap<>();
     Button tryAgainButton;
     Spinner spn_currency;
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchCurrencyRates() {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, "http://api.fixer.io/latest", new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,CURRENCY_RATE_URI, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {

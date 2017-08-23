@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">CurrencyConversion</string>
+
+    <string name="error_timeout">We’re sorry, there seems to be a connection error. Please contact support@trainerpl.us if this problem continues.</string>
+    <string name="auth_fail">Incorrect email/password.</string>
+    <string name="network_error">We’re sorry, there seems to be a network error. </string>
+    <string name="parse_error">We’re sorry, there seems to be a parse error. </string>
+    <string name="error_404">We’re sorry, there seems to be a network error. </string>
+    <string name="error_universal">Something went wrong.</string>
+    <string name="connection_error">Internet connection unavailable. Please check your connections.</string>
+
+</resources>

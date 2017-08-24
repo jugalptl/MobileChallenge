@@ -3,6 +3,7 @@ package com.example.igroup.currencyconversion;
 import android.Manifest;
 import android.app.VoiceInteractor;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -44,15 +45,18 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String CURRENCY_RATE_PREFERENCE = "currency_rate_preference";
     static String CURRENCY_RATE_URI = "http://api.fixer.io/latest";
-    HashMap<String,Double > hashMapRates = new HashMap<>();
-    Button tryAgainButton;
+    //HashMap<String,Double > hashMapRates = new HashMap<>();
     Spinner spn_currency;
     EditText edtxt_amount;
     GridView gridview;
     List<String> ITEM_LIST;
     ArrayAdapter<String> arrayAdapter;
     double convertedRate;
+
+    SharedPreferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +67,11 @@ public class MainActivity extends AppCompatActivity {
         gridview =(GridView)findViewById(R.id.gridView) ;
         ITEM_LIST = new ArrayList<>();
 
-        /*Check for Internet permission*/
+        /*Check for Internet Connection*/
 
         if(!isNetworkAvailable()) {
             Toast.makeText(MainActivity.this,"No Internet Connection",Toast.LENGTH_LONG).show();
+            setSpnner();
         } else
         {
                     fetchCurrencyRates();
@@ -76,15 +81,18 @@ public class MainActivity extends AppCompatActivity {
 
         arrayAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,ITEM_LIST);
         gridview.setAdapter(arrayAdapter);
+
+
+     /*Calculate the amount(Euro) into selected currency rate equivalent*/
+
         spn_currency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-
-            @Override
+    @Override
      public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
          if(i>0){
          try {
-             convertedRate= (Double.parseDouble(edtxt_amount.getText().toString()) * hashMapRates.get(spn_currency.getSelectedItem()));
+            // convertedRate= (Double.parseDouble(edtxt_amount.getText().toString()) * hashMapRates.get(spn_currency.getSelectedItem()));
+            convertedRate = Math.round((Double.parseDouble(edtxt_amount.getText().toString()) * (Double.parseDouble(preferences.getString(spn_currency.getSelectedItem().toString(),""))))*10000.0)/10000.0;
          }catch (NumberFormatException e)
          {
              Log.e("Exception",e.toString());
@@ -105,7 +113,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!isNetworkAvailable())
+        {
+            Toast.makeText(MainActivity.this,"No Internet Connection",Toast.LENGTH_LONG).show();
+            setSpnner();
+        } else
+        {
+            fetchCurrencyRates();
 
+        }
+
+    }
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
@@ -125,16 +146,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    hashMapRates.clear();
+                   //hashMapRates.clear();
+                    SharedPreferences.Editor editor = getSharedPreferences(CURRENCY_RATE_PREFERENCE,MODE_PRIVATE).edit();
                     JSONObject rates = response.getJSONObject("rates");
                    Iterator<?> keys = rates.keys();
                    while(keys.hasNext())
                    {
                        String currencyName = (String)keys.next();
                        Double currencyRate =  rates.getDouble(currencyName);
-                       hashMapRates.put(currencyName,currencyRate);
+                      // hashMapRates.put(currencyName,currencyRate);
+                       editor.putString(currencyName,currencyRate.toString());
                    }
-
+                    editor.commit();
                    setSpnner();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -164,10 +187,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /*Set Currency type into drop down spinner*/
     private void setSpnner() {
         List<String> array_spinner = new ArrayList<>();
         array_spinner.add("Select Currency");
-        array_spinner.addAll(hashMapRates.keySet());
+        preferences = getSharedPreferences(CURRENCY_RATE_PREFERENCE,MODE_PRIVATE);
+        Map<String, ?> allEntries = preferences.getAll();
+
+        if (!allEntries.isEmpty()) {
+            array_spinner.addAll(allEntries.keySet());
+        }
+        //array_spinner.addAll(hashMapRates.keySet());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_spinner_item,array_spinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spn_currency.setAdapter(adapter);
